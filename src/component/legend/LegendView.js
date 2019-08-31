@@ -158,7 +158,7 @@ export default echarts.extendComponentView({
 
         each(legendModel.getData(), function (itemModel, dataIndex) {
             var name = itemModel.get('name');
-
+            var option = itemModel.option;
             // Use empty string or \n as a newline string
             if (!this.newlineDisabled && (name === '' || name === '\n')) {
                 contentGroup.add(new Group({
@@ -194,7 +194,7 @@ export default echarts.extendComponentView({
                     name, dataIndex, itemModel, legendModel,
                     legendSymbolType, symbolType,
                     itemAlign, color,
-                    selectMode
+                    selectMode, option
                 );
 
                 itemGroup.on('click', curry(dispatchSelectAction, name, api))
@@ -226,7 +226,7 @@ export default echarts.extendComponentView({
                             name, dataIndex, itemModel, legendModel,
                             legendSymbolType, null,
                             itemAlign, color,
-                            selectMode
+                            selectMode, option
                         );
 
                         // FIXME: consider different series has items with the same name.
@@ -299,8 +299,10 @@ export default echarts.extendComponentView({
     _createItem: function (
         name, dataIndex, itemModel, legendModel,
         legendSymbolType, symbolType,
-        itemAlign, color, selectMode
+        itemAlign, color, selectMode,
+        option
     ) {
+        console.log('option', option)
         var itemWidth = legendModel.get('itemWidth');
         var itemHeight = legendModel.get('itemHeight');
         var inactiveColor = legendModel.get('inactiveColor');
@@ -361,8 +363,30 @@ export default echarts.extendComponentView({
             content = formatter.replace('{name}', name != null ? name : '');
         }
         else if (typeof formatter === 'function') {
-            content = formatter(name);
+            content = formatter(name, option);
         }
+        var formatter1 = legendModel.get('formatter1');
+        var content1 = name;
+        if (typeof formatter1 === 'string' && formatter1) {
+            content1 = formatter1.replace('{name}', name != null ? name : '');
+        }
+        else if (typeof formatter1 === 'function') {
+            content1 = formatter1(name, option);
+        }
+
+        console.log('option', option)
+        var textStyleModel1 = itemModel.getModel('textStyle1');
+        console.log('输出content', textStyleModel.getTextRect(), content)
+        itemGroup.add(new graphic.Text({
+            style: graphic.setTextStyle({}, textStyleModel1, {
+                text: content1,
+                x: textStyleModel.getTextRect().width + 5,
+                y: itemHeight / 2,
+                textFill: isSelected ? textStyleModel1.getTextColor() : inactiveColor,
+                textAlign: textAlign,
+                textVerticalAlign: 'middle'
+            })
+        }));
 
         itemGroup.add(new graphic.Text({
             style: graphic.setTextStyle({}, textStyleModel, {
@@ -375,6 +399,7 @@ export default echarts.extendComponentView({
             })
         }));
 
+        // 测试
         // Add a invisible rect to increase the area of mouse hover
         var hitRect = new graphic.Rect({
             shape: itemGroup.getBoundingRect(),
@@ -393,6 +418,7 @@ export default echarts.extendComponentView({
                 }
             }, tooltipModel.option) : null
         });
+        console.log('item',itemGroup)
         itemGroup.add(hitRect);
 
         itemGroup.eachChild(function (child) {
