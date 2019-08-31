@@ -13,7 +13,7 @@
     "url": "https://github.com/apache/incubator-echarts.git"
   },
   "scripts": {
-    "build":"node build/build.js",
+    "build":"node build/build.js --release",
     "prepublish": "node build/build.js --prepublish",
     "test": "node build/build.js"
   },

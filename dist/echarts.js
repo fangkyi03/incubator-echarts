@@ -63423,7 +63423,7 @@ function normalizeSymbolSize$1(symbolSize) {
 }
 
 function updateRipplePath(rippleGroup, effectCfg) {
-    const color = effectCfg.rippleEffectColor || effectCfg.color;
+    var color = effectCfg.rippleEffectColor || effectCfg.color;
     rippleGroup.eachChild(function (ripplePath) {
         ripplePath.attr({
             z: effectCfg.z,
