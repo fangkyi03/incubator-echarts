@@ -302,7 +302,6 @@ export default echarts.extendComponentView({
         itemAlign, color, selectMode,
         option
     ) {
-        console.log('option', option)
         var itemWidth = legendModel.get('itemWidth');
         var itemHeight = legendModel.get('itemHeight');
         var inactiveColor = legendModel.get('inactiveColor');
@@ -373,10 +372,7 @@ export default echarts.extendComponentView({
         else if (typeof formatter1 === 'function') {
             content1 = formatter1(name, option);
         }
-
-        console.log('option', option)
         var textStyleModel1 = itemModel.getModel('textStyle1');
-        console.log('输出content', textStyleModel.getTextRect(), content)
         itemGroup.add(new graphic.Text({
             style: graphic.setTextStyle({}, textStyleModel1, {
                 text: content1,
@@ -418,7 +414,6 @@ export default echarts.extendComponentView({
                 }
             }, tooltipModel.option) : null
         });
-        console.log('item',itemGroup)
         itemGroup.add(hitRect);
 
         itemGroup.eachChild(function (child) {
